@@ -168,5 +168,13 @@ int process_log_list(const std::string& logs_txt_path) {
   if (!file.is_open()) {
     return -1;
   }
-  return -2;  // Sabotado temporariamente para o RED falhar
+
+  int processed_count = 0;
+  std::string log_file_path;
+  while (std::getline(file, log_file_path)) {
+    if (log_file_path.empty()) continue;
+    // Lógica interna de processamento será mapeada nos próximos testes
+  }
+
+  return processed_count;
 }
