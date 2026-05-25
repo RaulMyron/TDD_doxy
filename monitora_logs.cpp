@@ -11,27 +11,46 @@
 #include <string>
 #include <vector>
 
-LogEntry parse_log_line(const std::string& line) {
-  LogEntry entry;
-  entry.valid = false;
+namespace {
 
-  std::istringstream iss(line);
+constexpr char kDateSep = '/';
+constexpr char kTimeSep = ':';
+
+/**
+ * @brief Le os 6 campos numericos de data e hora de um istringstream.
+ *
+ * Espera o formato "D/M/AAAA H:MM:SS". Atualiza @p entry em caso de
+ * sucesso. Retorna false se a leitura falhar ou os separadores nao
+ * corresponderem.
+ */
+bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep1 = 0;
   char sep2 = 0;
   char sep3 = 0;
   char sep4 = 0;
 
-  iss >> entry.day >> sep1 >> entry.month >> sep2 >> entry.year >> entry.hour >>
-      sep3 >> entry.minute >> sep4 >> entry.second;
+  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year >>
+      entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
 
-  if (iss.fail()) {
+  if (iss->fail()) {
+    return false;
+  }
+  return sep1 == kDateSep && sep2 == kDateSep && sep3 == kTimeSep &&
+         sep4 == kTimeSep;
+}
+
+}  // namespace
+
+LogEntry parse_log_line(const std::string& line) {
+  LogEntry entry;
+  entry.valid = false;
+
+  std::istringstream iss(line);
+  if (!read_date_and_time(&iss, &entry)) {
     return entry;
   }
-  if (sep1 != '/' || sep2 != '/' || sep3 != ':' || sep4 != ':') {
-    return entry;
-  }
 
-  // Le o resto da linha (mensagem). getline consome o espaco separador.
+  // O restante da linha e a mensagem; getline consome o espaco separador.
   std::string rest;
   std::getline(iss, rest);
   if (!rest.empty() && rest[0] == ' ') {
@@ -39,7 +58,6 @@ LogEntry parse_log_line(const std::string& line) {
   }
   entry.message = rest;
   entry.valid = true;
-
   return entry;
 }
 
