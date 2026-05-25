@@ -95,6 +95,15 @@ bool read_log_file(const std::string& path,
     return false;
   }
 
+  std::string line;
+  while (std::getline(file, line)) {
+    if (line.empty()) continue;
+    LogEntry entry = parse_log_line(line);
+    if (entry.valid && entries != nullptr) {
+      entries->push_back(entry);
+    }
+  }
+
   return true;
 }
 
