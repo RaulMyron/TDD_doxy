@@ -120,8 +120,13 @@ LogEntry parse_log_line(const std::string& line) {
   return entry;
 }
 
-int compare_log_entries(const LogEntry& /*a*/, const LogEntry& /*b*/) {
-  return 0;
+int compare_log_entries(const LogEntry& a, const LogEntry& b) {
+  if (a.year != b.year) return a.year - b.year;
+  if (a.month != b.month) return a.month - b.month;
+  if (a.day != b.day) return a.day - b.day;
+  if (a.hour != b.hour) return a.hour - b.hour;
+  if (a.minute != b.minute) return a.minute - b.minute;
+  return a.second - b.second;
 }
 
 bool read_log_file(const std::string& /*path*/,
