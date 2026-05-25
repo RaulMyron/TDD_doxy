@@ -38,6 +38,21 @@ bool is_valid_date(int day, int month, int year) {
   return true;
 }
 
+constexpr int kMinHour = 0;
+constexpr int kMaxHour = 23;
+constexpr int kMinMinSec = 0;
+constexpr int kMaxMinSec = 59;
+
+/**
+ * @brief Verifica se hora/minuto/segundo estao em intervalos validos.
+ */
+bool is_valid_time(int hour, int minute, int second) {
+  if (hour < kMinHour || hour > kMaxHour) return false;
+  if (minute < kMinMinSec || minute > kMaxMinSec) return false;
+  if (second < kMinMinSec || second > kMaxMinSec) return false;
+  return true;
+}
+
 /**
  * @brief Le os 6 campos numericos de data e hora e valida a data.
  *
@@ -64,13 +79,7 @@ bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
     return false;
   }
   // Validacao de intervalos de hora.
-  if (entry->hour < 0 || entry->hour > 23) {
-    return false;
-  }
-  if (entry->minute < 0 || entry->minute > 59) {
-    return false;
-  }
-  if (entry->second < 0 || entry->second > 59) {
+  if (!is_valid_time(entry->hour, entry->minute, entry->second)) {
     return false;
   }
   return true;
