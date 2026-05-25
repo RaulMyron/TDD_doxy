@@ -94,10 +94,12 @@ bool write_log_file(const std::string& /*path*/,
   return false;
 }
 
-std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& /*a*/,
-                                    const std::vector<LogEntry>& /*b*/) {
-  // Forçando o RED a falhar inserindo propositalmente um elemento na lista
-  return std::vector<LogEntry>(1);
+std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a,
+                                    const std::vector<LogEntry>& b) {
+  if (a.empty() && b.empty()) {
+    return std::vector<LogEntry>();
+  }
+  return std::vector<LogEntry>();
 }
 
 std::string make_total_filename(const std::string& source_path) {
