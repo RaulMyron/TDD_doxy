@@ -2,22 +2,44 @@
 
 /**
  * @file monitora_logs.cpp
- * @brief Implementacao stub do sistema de monitoramento de logs.
- *
- * Todas as funcoes estao em estado RED do ciclo TDD: retornam valores
- * minimos para permitir compilacao mas falham todos os testes. Cada
- * funcao sera implementada incrementalmente seguindo
- * RED -> GREEN -> REFACTOR.
+ * @brief Implementacao do sistema de monitoramento de logs.
  */
 
 #include "monitora_logs.hpp"
 
+#include <sstream>
 #include <string>
 #include <vector>
 
-LogEntry parse_log_line(const std::string& /*line*/) {
+LogEntry parse_log_line(const std::string& line) {
   LogEntry entry;
   entry.valid = false;
+
+  std::istringstream iss(line);
+  char sep1 = 0;
+  char sep2 = 0;
+  char sep3 = 0;
+  char sep4 = 0;
+
+  iss >> entry.day >> sep1 >> entry.month >> sep2 >> entry.year >> entry.hour >>
+      sep3 >> entry.minute >> sep4 >> entry.second;
+
+  if (iss.fail()) {
+    return entry;
+  }
+  if (sep1 != '/' || sep2 != '/' || sep3 != ':' || sep4 != ':') {
+    return entry;
+  }
+
+  // Le o resto da linha (mensagem). getline consome o espaco separador.
+  std::string rest;
+  std::getline(iss, rest);
+  if (!rest.empty() && rest[0] == ' ') {
+    rest = rest.substr(1);
+  }
+  entry.message = rest;
+  entry.valid = true;
+
   return entry;
 }
 
@@ -47,6 +69,4 @@ std::string make_total_filename(const std::string& /*source_path*/) {
   return std::string();
 }
 
-int process_log_list(const std::string& /*logs_txt_path*/) {
-  return -1;
-}
+int process_log_list(const std::string& /*logs_txt_path*/) { return -1; }
