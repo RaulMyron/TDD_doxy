@@ -128,3 +128,22 @@ TEST_CASE("T8 RED: MergeEntries_UmaListaVaziaRetornaOutraOrdenada",
     REQUIRE(resultado[1].message == "Log B");
   }
 }
+
+TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
+  std::vector<LogEntry> lista_a = {
+    {16, 1, 2026, 13, 27, 46, "Log A1", true},
+    {20, 1, 2026, 17, 45, 38, "Log A2", true}
+  };
+  std::vector<LogEntry> lista_b = {
+    {17, 1, 2026, 14, 17, 46, "Log B1", true},
+    {21, 1, 2026, 18, 55, 38, "Log B2", true}
+  };
+
+  std::vector<LogEntry> resultado = merge_entries(lista_a, lista_b);
+
+  REQUIRE(resultado.size() == 4);
+  REQUIRE(resultado[0].message == "Log A1");
+  REQUIRE(resultado[1].message == "Log B1");
+  REQUIRE(resultado[2].message == "Log A2");
+  REQUIRE(resultado[3].message == "Log B2");
+}
