@@ -147,3 +147,14 @@ TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   REQUIRE(resultado[2].message == "Log A2");
   REQUIRE(resultado[3].message == "Log B2");
 }
+
+TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste", "[read_log_file]") {
+  std::vector<LogEntry> entradas;
+  // Força inserção de lixo para garantir que a função vai limpar o vetor
+  entradas.push_back({1, 1, 2026, 0, 0, 0, "Lixo", true});
+
+  bool resultado = read_log_file("arquivo_inexistente_123456.txt", &entradas);
+
+  REQUIRE(resultado == false);
+  REQUIRE(entradas.empty() == true);
+}
