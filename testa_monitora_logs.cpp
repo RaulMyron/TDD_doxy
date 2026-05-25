@@ -213,3 +213,34 @@ TEST_CASE("T14 RED: ProcessLogList_RetornaZeroQuandoLogsTxtVazio",
 
   std::remove("lista_vazia.txt");
 }
+
+TEST_CASE("T15 RED: ProcessLogList_PulaArquivoInexistenteEContinua",
+          "[process_log_list]") {
+  // Criamos dois arquivos de log reais
+  std::ofstream f1("log_existente1.txt");
+  f1 << "16/1/2026 13:27:46 Log Existente 1\n";
+  f1.close();
+
+  std::ofstream f2("log_existente2.txt");
+  f2 << "17/1/2026 14:17:46 Log Existente 2\n";
+  f2.close();
+
+  // Criamos a lista de logs misturando um fantasma no meio
+  std::ofstream lista("lista_mista.txt");
+  lista << "log_existente1.txt\n";
+  lista << "arquivo_fantasma_nao_existe.txt\n";
+  lista << "log_existente2.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_mista.txt");
+
+  // Deve processar com sucesso os 2 arquivos que existem
+  REQUIRE(resultado == 2);
+
+  // Limpeza de arquivos temporários
+  std::remove("log_existente1.txt");
+  std::remove("log_existente2.txt");
+  std::remove("lista_mista.txt");
+  std::remove("total_log_existente1.txt");
+  std::remove("total_log_existente2.txt");
+}
