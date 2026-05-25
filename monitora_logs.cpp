@@ -96,7 +96,8 @@ bool write_log_file(const std::string& /*path*/,
 
 std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& /*a*/,
                                     const std::vector<LogEntry>& /*b*/) {
-  return std::vector<LogEntry>();
+  // Forçando o RED a falhar inserindo propositalmente um elemento na lista
+  return std::vector<LogEntry>(1);
 }
 
 std::string make_total_filename(const std::string& source_path) {
