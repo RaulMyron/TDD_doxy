@@ -168,5 +168,5 @@ int process_log_list(const std::string& logs_txt_path) {
   if (!file.is_open()) {
     return -1;
   }
-  return 0;
+  return -2;  // Sabotado temporariamente para o RED falhar
 }

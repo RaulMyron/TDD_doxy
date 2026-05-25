@@ -201,3 +201,15 @@ TEST_CASE("T13 RED: ProcessLogList_RetornaErroQuandoLogsTxtInexistente",
   int resultado = process_log_list("lista_de_logs_totalmente_inexistente.txt");
   REQUIRE(resultado == -1);
 }
+
+TEST_CASE("T14 RED: ProcessLogList_RetornaZeroQuandoLogsTxtVazio",
+          "[process_log_list]") {
+  // Cria um arquivo de lista de logs vazio
+  std::ofstream criador("lista_vazia.txt");
+  criador.close();
+
+  int resultado = process_log_list("lista_vazia.txt");
+  REQUIRE(resultado == 0);
+
+  std::remove("lista_vazia.txt");
+}
