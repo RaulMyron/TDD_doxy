@@ -173,7 +173,23 @@ int process_log_list(const std::string& logs_txt_path) {
   std::string log_file_path;
   while (std::getline(file, log_file_path)) {
     if (log_file_path.empty()) continue;
-    // Lógica interna de processamento será mapeada nos próximos testes
+
+    std::vector<LogEntry> new_entries;
+    if (!read_log_file(log_file_path, &new_entries)) {
+      continue;  // Pula o arquivo se ele não existir
+    }
+
+    std::string total_filename = make_total_filename(log_file_path);
+    std::vector<LogEntry> current_total_entries;
+
+    // Tenta ler o total existente se houver, se não houver começa vazio
+    read_log_file(total_filename, &current_total_entries);
+
+    std::vector<LogEntry> merged =
+        merge_entries(current_total_entries, new_entries);
+    write_log_file(total_filename, merged);
+
+    processed_count++;
   }
 
   return processed_count;
