@@ -6,6 +6,8 @@
  */
 
 #define CATCH_CONFIG_MAIN
+#include <cstdio>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -107,7 +109,14 @@ TEST_CASE("MakeTotalFilename_ExtraiNomeBaseEPrefixa", "[make_total_filename]") {
   }
 }
 
-TEST_CASE("T8 RED: MergeEntries_UmaListaVaziaRetornaOutraOrdenada",
+TEST_CASE("T7: MergeEntries_ListasVaziasRetornaVazio", "[merge_entries]") {
+  std::vector<LogEntry> lista_a;
+  std::vector<LogEntry> lista_b;
+  std::vector<LogEntry> resultado = merge_entries(lista_a, lista_b);
+  REQUIRE(resultado.empty() == true);
+}
+
+TEST_CASE("T8: MergeEntries_UmaListaVaziaRetornaOutraOrdenada",
           "[merge_entries]") {
   std::vector<LogEntry> lista_vazia;
   std::vector<LogEntry> lista_com_elementos = {
@@ -129,7 +138,7 @@ TEST_CASE("T8 RED: MergeEntries_UmaListaVaziaRetornaOutraOrdenada",
   }
 }
 
-TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
+TEST_CASE("T9: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   std::vector<LogEntry> lista_a = {{16, 1, 2026, 13, 27, 46, "Log A1", true},
                                    {20, 1, 2026, 17, 45, 38, "Log A2", true}};
   std::vector<LogEntry> lista_b = {{17, 1, 2026, 14, 17, 46, "Log B1", true},
@@ -144,7 +153,7 @@ TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   REQUIRE(resultado[3].message == "Log B2");
 }
 
-TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
+TEST_CASE("T10: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
           "[read_log_file]") {
   std::vector<LogEntry> entradas;
   entradas.push_back({1, 1, 2026, 0, 0, 0, "Lixo", true});
@@ -155,8 +164,7 @@ TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
   REQUIRE(entradas.empty() == true);
 }
 
-TEST_CASE("T11 RED: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
-  // Criamos um arquivo de testes temporario no disco
+TEST_CASE("T11: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
   std::ofstream criador("teste_linhas_validas.txt");
   criador << "16/1/2026 13:27:46 Log Valido 1\n";
   criador << "17/1/2026 14:17:46 Log Valido 2\n";
@@ -170,11 +178,10 @@ TEST_CASE("T11 RED: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
   REQUIRE(entradas[0].message == "Log Valido 1");
   REQUIRE(entradas[1].message == "Log Valido 2");
 
-  // Remove o arquivo temporario
   std::remove("teste_linhas_validas.txt");
 }
 
-TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
+TEST_CASE("T12: WriteLogFile_EscreveEntradasNoFormatoCorreto",
           "[write_log_file]") {
   std::vector<LogEntry> entradas = {
       {16, 1, 2026, 13, 27, 46, "Texto do log A", true},
@@ -183,7 +190,6 @@ TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
   bool resultado = write_log_file("teste_escrita.txt", entradas);
   REQUIRE(resultado == true);
 
-  // Valida abrindo o arquivo para ler o conteudo textual gravado
   std::ifstream leitor("teste_escrita.txt");
   std::string linha1, linha2;
   std::getline(leitor, linha1);
@@ -196,15 +202,14 @@ TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
   std::remove("teste_escrita.txt");
 }
 
-TEST_CASE("T13 RED: ProcessLogList_RetornaErroQuandoLogsTxtInexistente",
+TEST_CASE("T13: ProcessLogList_RetornaErroQuandoLogsTxtInexistente",
           "[process_log_list]") {
   int resultado = process_log_list("lista_de_logs_totalmente_inexistente.txt");
   REQUIRE(resultado == -1);
 }
 
-TEST_CASE("T14 RED: ProcessLogList_RetornaZeroQuandoLogsTxtVazio",
+TEST_CASE("T14: ProcessLogList_RetornaZeroQuandoLogsTxtVazio",
           "[process_log_list]") {
-  // Cria um arquivo de lista de logs vazio
   std::ofstream criador("lista_vazia.txt");
   criador.close();
 
@@ -214,9 +219,8 @@ TEST_CASE("T14 RED: ProcessLogList_RetornaZeroQuandoLogsTxtVazio",
   std::remove("lista_vazia.txt");
 }
 
-TEST_CASE("T15 RED: ProcessLogList_PulaArquivoInexistenteEContinua",
+TEST_CASE("T15: ProcessLogList_PulaArquivoInexistenteEContinua",
           "[process_log_list]") {
-  // Criamos dois arquivos de log reais
   std::ofstream f1("log_existente1.txt");
   f1 << "16/1/2026 13:27:46 Log Existente 1\n";
   f1.close();
@@ -225,7 +229,6 @@ TEST_CASE("T15 RED: ProcessLogList_PulaArquivoInexistenteEContinua",
   f2 << "17/1/2026 14:17:46 Log Existente 2\n";
   f2.close();
 
-  // Criamos a lista de logs misturando um fantasma no meio
   std::ofstream lista("lista_mista.txt");
   lista << "log_existente1.txt\n";
   lista << "arquivo_fantasma_nao_existe.txt\n";
@@ -233,14 +236,152 @@ TEST_CASE("T15 RED: ProcessLogList_PulaArquivoInexistenteEContinua",
   lista.close();
 
   int resultado = process_log_list("lista_mista.txt");
-
-  // Deve processar com sucesso os 2 arquivos que existem
   REQUIRE(resultado == 2);
 
-  // Limpeza de arquivos temporários
   std::remove("log_existente1.txt");
   std::remove("log_existente2.txt");
   std::remove("lista_mista.txt");
   std::remove("total_log_existente1.txt");
   std::remove("total_log_existente2.txt");
+}
+
+TEST_CASE("T16: ProcessLogList_NaoCriaTotalParaArquivoSemLinhasValidas",
+          "[process_log_list]") {
+  std::ofstream f_invalid("log_invalido.txt");
+  f_invalid << "DATA_ERRADA msg_errada\n";
+  f_invalid.close();
+
+  std::ofstream lista("lista_invalida.txt");
+  lista << "log_invalido.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_invalida.txt");
+  REQUIRE(resultado == 1);
+
+  std::ifstream checa_total("total_log_invalido.txt");
+  REQUIRE(checa_total.is_open() == false);
+
+  std::remove("log_invalido.txt");
+  std::remove("lista_invalida.txt");
+}
+
+TEST_CASE("T17: ProcessLogList_CriaTotalOrdenadoQuandoNaoExiste",
+          "[process_log_list]") {
+  std::ofstream f_new("log_novo.txt");
+  f_new << "20/1/2026 17:45:38 Log Novo 2\n";
+  f_new << "16/1/2026 13:27:46 Log Novo 1\n";
+  f_new.close();
+
+  std::ofstream lista("lista_novo.txt");
+  lista << "log_novo.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_novo.txt");
+  REQUIRE(resultado == 1);
+
+  std::ifstream leitor("total_log_novo.txt");
+  std::string l1, l2;
+  std::getline(leitor, l1);
+  std::getline(leitor, l2);
+  leitor.close();
+
+  REQUIRE(l1 == "16/1/2026 13:27:46 Log Novo 1");
+  REQUIRE(l2 == "20/1/2026 17:45:38 Log Novo 2");
+
+  std::remove("log_novo.txt");
+  std::remove("lista_novo.txt");
+  std::remove("total_log_novo.txt");
+}
+
+TEST_CASE("T18: ProcessLogList_FazMergeOrdenadoComTotalExistente",
+          "[process_log_list]") {
+  std::ofstream f_total("total_log_merge.txt");
+  f_total << "17/1/2026 14:17:46 Log Antigo de Base\n";
+  f_total.close();
+
+  std::ofstream f_log("log_merge.txt");
+  f_log << "16/1/2026 13:27:46 Log Novo Intercalado\n";
+  f_log.close();
+
+  std::ofstream lista("lista_merge.txt");
+  lista << "log_merge.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_merge.txt");
+  REQUIRE(resultado == 1);
+
+  std::ifstream leitor("total_log_merge.txt");
+  std::string l1, l2;
+  std::getline(leitor, l1);
+  std::getline(leitor, l2);
+  leitor.close();
+
+  REQUIRE(l1 == "16/1/2026 13:27:46 Log Novo Intercalado");
+  REQUIRE(l2 == "17/1/2026 14:17:46 Log Antigo de Base");
+
+  std::remove("log_merge.txt");
+  std::remove("lista_merge.txt");
+  std::remove("total_log_merge.txt");
+}
+
+TEST_CASE("T19: ProcessLogList_ProcessaListaMistaExistentesEInexistentes",
+          "[process_log_list]") {
+  std::ofstream f_ok("log_real.txt");
+  f_ok << "16/1/2026 13:27:46 Log Real\n";
+  f_ok.close();
+
+  std::ofstream lista("lista_mista_completa.txt");
+  lista << "arquivo_que_nao_existe1.txt\n";
+  lista << "log_real.txt\n";
+  lista << "arquivo_que_nao_existe2.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_mista_completa.txt");
+  REQUIRE(resultado == 1);
+
+  std::remove("log_real.txt");
+  std::remove("lista_mista_completa.txt");
+  std::remove("total_log_real.txt");
+}
+
+TEST_CASE("T20: ProcessLogList_DescartaLinhasInvalidasEProcessaValidas",
+          "[process_log_list]") {
+  std::ofstream f_misto("log_linhas_mistas.txt");
+  f_misto << "LINHA_TOTALMENTE_CORRUPTA_E_INVALIDA\n";
+  f_misto << "16/1/2026 13:27:46 Linha Valida Inserida\n";
+  f_misto.close();
+
+  std::ofstream lista("lista_linhas_mistas.txt");
+  lista << "log_linhas_mistas.txt\n";
+  lista.close();
+
+  int resultado = process_log_list("lista_linhas_mistas.txt");
+  REQUIRE(resultado == 1);
+
+  std::ifstream leitor("total_log_linhas_mistas.txt");
+  std::string linha;
+  std::getline(leitor, linha);
+  REQUIRE(linha == "16/1/2026 13:27:46 Linha Valida Inserida");
+
+  std::string extra;
+  std::getline(leitor, extra);
+  REQUIRE(extra.empty() == true);
+  leitor.close();
+
+  std::remove("log_linhas_mistas.txt");
+  std::remove("lista_linhas_mistas.txt");
+  std::remove("total_log_linhas_mistas.txt");
+}
+
+#include <regex>
+
+TEST_CASE("T21: Regex_MensagemTamanho1A100", "[caixa_aberta]") {
+  // Regex mapeando o formato: data hora mensagem(1 ate 100 chars)
+  std::regex padrao_log("^\\d+/\\d+/\\d+ \\d+:\\d+:\\d+ .{1,100}$");
+
+  std::string linha_valida = "16/1/2026 13:27:46 Exemplo correto de log";
+  std::string linha_longa = "16/1/2026 13:27:46 " + std::string(101, 'a');
+
+  REQUIRE(std::regex_match(linha_valida, padrao_log) == true);
+  REQUIRE(std::regex_match(linha_longa, padrao_log) == false);
 }
