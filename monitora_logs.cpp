@@ -15,13 +15,34 @@ namespace {
 
 constexpr char kDateSep = '/';
 constexpr char kTimeSep = ':';
+constexpr int kMinDay = 1;
+constexpr int kMaxDay = 31;
+constexpr int kMinMonth = 1;
+constexpr int kMaxMonth = 12;
+constexpr int kMinYear = 1;
 
 /**
- * @brief Le os 6 campos numericos de data e hora e valida intervalos.
+ * @brief Verifica se uma data (dia, mes, ano) esta dentro dos intervalos
+ *        validos da especificacao.
+ */
+bool is_valid_date(int day, int month, int year) {
+  if (day < kMinDay || day > kMaxDay) {
+    return false;
+  }
+  if (month < kMinMonth || month > kMaxMonth) {
+    return false;
+  }
+  if (year < kMinYear) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * @brief Le os 6 campos numericos de data e hora e valida a data.
  *
- * Espera o formato "D/M/AAAA H:MM:SS". Atualiza @p entry em caso de
- * sucesso. Retorna false se a leitura falhar, os separadores nao
- * corresponderem, ou se a data estiver fora dos intervalos validos.
+ * Espera o formato "D/M/AAAA H:MM:SS". Retorna false se a leitura
+ * falhar, os separadores nao corresponderem, ou a data for invalida.
  */
 bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep1 = 0;
@@ -39,17 +60,7 @@ bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
       || sep3 != kTimeSep || sep4 != kTimeSep) {
     return false;
   }
-  // Validacao de intervalos de data.
-  if (entry->day < 1 || entry->day > 31) {
-    return false;
-  }
-  if (entry->month < 1 || entry->month > 12) {
-    return false;
-  }
-  if (entry->year < 1) {
-    return false;
-  }
-  return true;
+  return is_valid_date(entry->day, entry->month, entry->year);
 }
 
 }  // namespace
