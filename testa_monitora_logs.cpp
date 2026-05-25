@@ -112,3 +112,23 @@ TEST_CASE("T7 RED: MergeEntries_ListasVaziasRetornaVazio", "[merge_entries]") {
 
   REQUIRE(resultado.empty() == true);
 }
+
+TEST_CASE("T8 RED: MergeEntries_UmaListaVaziaRetornaOutraOrdenada", "[merge_entries]") {
+  std::vector<LogEntry> lista_vazia;
+  std::vector<LogEntry> lista_com_elementos = {
+    {16, 1, 2026, 13, 27, 46, "Log A", true},
+    {20, 1, 2026, 17, 45, 38, "Log B", true}
+  };
+
+  SECTION("Lista A vazia e Lista B populada") {
+    std::vector<LogEntry> resultado = merge_entries(lista_vazia, lista_com_elementos);
+    REQUIRE(resultado.size() == 2);
+    REQUIRE(resultado[0].message == "Log A");
+  }
+
+  SECTION("Lista A populada e Lista B vazia") {
+    std::vector<LogEntry> resultado = merge_entries(lista_com_elementos, lista_vazia);
+    REQUIRE(resultado.size() == 2);
+    REQUIRE(resultado[1].message == "Log B");
+  }
+}
