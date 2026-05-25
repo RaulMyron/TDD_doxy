@@ -110,3 +110,19 @@ TEST_CASE("CompareLogEntries_OrdenaCronologicamente", "[compare][black-box]") {
   REQUIRE(compare_log_entries(b, a) > 0);
   REQUIRE(compare_log_entries(a, c) == 0);
 }
+
+TEST_CASE("T6 RED: MakeTotalFilename_ExtraiNomeBaseEPrefixa", "[make_total_filename]") {
+    // Caminhos do tipo Windows e Unix para extração do nome base
+    SECTION("Caminho absoluto com barras invertidas (Windows)") {
+        REQUIRE(make_total_filename("c:\\logs\\log1.txt") == "total_log1.txt");
+    }
+    SECTION("Caminho absoluto com barras normais (Unix)") {
+        REQUIRE(make_total_filename("/var/log/syslog.log") == "total_syslog.log");
+    }
+    SECTION("Apenas o nome do arquivo sem diretorio") {
+        REQUIRE(make_total_filename("meulog.txt") == "total_meulog.txt");
+    }
+    SECTION("Caminho com multiplos niveis de diretorio") {
+        REQUIRE(make_total_filename("f:\\backup\\2026\\logs\\log_backup.txt") == "total_log_backup.txt");
+    }
+}
