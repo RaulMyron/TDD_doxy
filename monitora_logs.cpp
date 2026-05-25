@@ -96,9 +96,8 @@ bool write_log_file(const std::string& /*path*/,
 
 std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a,
                                     const std::vector<LogEntry>& b) {
-  if (a.empty() && b.empty()) {
-    return std::vector<LogEntry>();
-  }
+  if (a.empty()) return b;
+  if (b.empty()) return a;
   return std::vector<LogEntry>();
 }
 
