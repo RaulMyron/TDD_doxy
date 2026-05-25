@@ -154,3 +154,22 @@ TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
   REQUIRE(resultado == false);
   REQUIRE(entradas.empty() == true);
 }
+
+TEST_CASE("T11 RED: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
+  // Criamos um arquivo de testes temporario no disco
+  std::ofstream criador("teste_linhas_validas.txt");
+  criador << "16/1/2026 13:27:46 Log Valido 1\n";
+  criador << "17/1/2026 14:17:46 Log Valido 2\n";
+  criador.close();
+
+  std::vector<LogEntry> entradas;
+  bool resultado = read_log_file("teste_linhas_validas.txt", &entradas);
+
+  REQUIRE(resultado == true);
+  REQUIRE(entradas.size() == 2);
+  REQUIRE(entradas[0].message == "Log Valido 1");
+  REQUIRE(entradas[1].message == "Log Valido 2");
+
+  // Remove o arquivo temporario
+  std::remove("teste_linhas_validas.txt");
+}
