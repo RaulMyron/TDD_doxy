@@ -15,6 +15,7 @@ namespace {
 
 constexpr char kDateSep = '/';
 constexpr char kTimeSep = ':';
+constexpr char kPathSeps[] = "/\\";
 constexpr int kMinDay = 1;
 constexpr int kMaxDay = 31;
 constexpr int kMinMonth = 1;
@@ -99,7 +100,7 @@ std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& /*a*/,
 }
 
 std::string make_total_filename(const std::string& source_path) {
-  size_t last_slash = source_path.find_last_of("/\\");
+  size_t last_slash = source_path.find_last_of(kPathSeps);
   if (last_slash == std::string::npos) {
     return "total_" + source_path;
   }
