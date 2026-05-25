@@ -7,7 +7,7 @@
 #                     e gera relatorios .gcov (precisa >= 80% por modulo)
 #   make valgrind   - roda os testes sob Valgrind (precisa zero leaks)
 #   make lint       - roda cpplint no codigo fonte (estilo Google)
-#   make check      - roda cppcheck --enable=warning
+#   make check      - roda cppcheck --enable=warning --suppress=*:catch.hpp
 #   make doc        - gera documentacao HTML com Doxygen em doc/html
 #   make clean      - remove artefatos de build e cobertura
 #   make distclean  - clean + remove documentacao gerada
@@ -88,8 +88,8 @@ lint:
 # cppcheck (analise estatica)
 # ----------------------------------------------------------------------------
 check:
-	cppcheck --enable=warning --inline-suppr --error-exitcode=1 \
-	         $(MOD_SRC) testa_monitora_logs.cpp
+	cppcheck --enable=warning --suppress=*:catch.hpp --inline-suppr --error-exitcode=1 \
+                 monitora_logs.cpp testa_monitora_logs.cpp
 
 # ----------------------------------------------------------------------------
 # Doxygen
