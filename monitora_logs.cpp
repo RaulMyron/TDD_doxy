@@ -163,4 +163,6 @@ std::string make_total_filename(const std::string& source_path) {
   return "total_" + source_path.substr(last_slash + 1);
 }
 
-int process_log_list(const std::string& /*logs_txt_path*/) { return -1; }
+int process_log_list(const std::string& /*logs_txt_path*/) {
+  return 0;  // Sabotado temporariamente para o RED falhar
+}

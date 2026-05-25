@@ -141,7 +141,7 @@ TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   REQUIRE(resultado[0].message == "Log A1");
   REQUIRE(resultado[1].message == "Log B1");
   REQUIRE(resultado[2].message == "Log A2");
-  REQUIRE(resultado[3].message == "Log B2");  // vai commit
+  REQUIRE(resultado[3].message == "Log B2");
 }
 
 TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
@@ -194,4 +194,10 @@ TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
   REQUIRE(linha2 == "17/1/2026 14:17:46 Texto do log B");
 
   std::remove("teste_escrita.txt");
+}
+
+TEST_CASE("T13 RED: ProcessLogList_RetornaErroQuandoLogsTxtInexistente",
+          "[process_log_list]") {
+  int resultado = process_log_list("lista_de_logs_totalmente_inexistente.txt");
+  REQUIRE(resultado == -1);
 }
