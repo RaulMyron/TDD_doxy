@@ -126,3 +126,14 @@ TEST_CASE("T6 RED: MakeTotalFilename_ExtraiNomeBaseEPrefixa", "[make_total_filen
         REQUIRE(make_total_filename("f:\\backup\\2026\\logs\\log_backup.txt") == "total_log_backup.txt");
     }
 }
+
+TEST_CASE("T7 RED: MergeEntries_ListasVaziasRetornaVazio", "[merge_entries]") {
+    std::vector<LogEntry> lista_a;
+    std::vector<LogEntry> lista_b;
+    
+    std::vector<LogEntry> resultado = merge_entries(lista_a, lista_b);
+    
+    // Forçamos a falha no RED alterando temporariamente o stub se necessário, 
+    // ou validando que o comportamento esperado ainda não está devidamente mapeado.
+    REQUIRE(resultado.empty() == true);
+}
