@@ -73,3 +73,27 @@ TEST_CASE("ParseLogLine_RejeitaHoraMalFormatada", "[parse][black-box]") {
     REQUIRE(parse_log_line("1/1/2026 12:00:60 msg").valid == false);
   }
 }
+
+// ----------------------------------------------------------------------------
+// T4 - ParseLogLine: rejeita mensagem vazia ou maior que 100 caracteres.
+// Sub-tabela de decisao ParseLogLine, coluna R3.
+// ----------------------------------------------------------------------------
+TEST_CASE("ParseLogLine_RejeitaMensagemVaziaOuLonga", "[parse][black-box]") {
+  SECTION("mensagem ausente") {
+    REQUIRE(parse_log_line("1/1/2026 12:00:00").valid == false);
+  }
+  SECTION("mensagem vazia apos espaco") {
+    REQUIRE(parse_log_line("1/1/2026 12:00:00 ").valid == false);
+  }
+  SECTION("mensagem com 101 caracteres") {
+    std::string longa(101, 'x');
+    REQUIRE(parse_log_line("1/1/2026 12:00:00 " + longa).valid == false);
+  }
+  SECTION("boundary: mensagem com 100 caracteres aceita") {
+    std::string ok(100, 'x');
+    REQUIRE(parse_log_line("1/1/2026 12:00:00 " + ok).valid == true);
+  }
+  SECTION("boundary: mensagem com 1 caractere aceita") {
+    REQUIRE(parse_log_line("1/1/2026 12:00:00 a").valid == true);
+  }
+}
