@@ -17,11 +17,11 @@ constexpr char kDateSep = '/';
 constexpr char kTimeSep = ':';
 
 /**
- * @brief Le os 6 campos numericos de data e hora de um istringstream.
+ * @brief Le os 6 campos numericos de data e hora e valida intervalos.
  *
  * Espera o formato "D/M/AAAA H:MM:SS". Atualiza @p entry em caso de
- * sucesso. Retorna false se a leitura falhar ou os separadores nao
- * corresponderem.
+ * sucesso. Retorna false se a leitura falhar, os separadores nao
+ * corresponderem, ou se a data estiver fora dos intervalos validos.
  */
 bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep1 = 0;
@@ -29,14 +29,27 @@ bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep3 = 0;
   char sep4 = 0;
 
-  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year >>
-      entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
+  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year
+         >> entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
 
   if (iss->fail()) {
     return false;
   }
-  return sep1 == kDateSep && sep2 == kDateSep && sep3 == kTimeSep &&
-         sep4 == kTimeSep;
+  if (sep1 != kDateSep || sep2 != kDateSep
+      || sep3 != kTimeSep || sep4 != kTimeSep) {
+    return false;
+  }
+  // Validacao de intervalos de data.
+  if (entry->day < 1 || entry->day > 31) {
+    return false;
+  }
+  if (entry->month < 1 || entry->month > 12) {
+    return false;
+  }
+  if (entry->year < 1) {
+    return false;
+  }
+  return true;
 }
 
 }  // namespace
@@ -50,7 +63,6 @@ LogEntry parse_log_line(const std::string& line) {
     return entry;
   }
 
-  // O restante da linha e a mensagem; getline consome o espaco separador.
   std::string rest;
   std::getline(iss, rest);
   if (!rest.empty() && rest[0] == ' ') {
@@ -87,4 +99,6 @@ std::string make_total_filename(const std::string& /*source_path*/) {
   return std::string();
 }
 
-int process_log_list(const std::string& /*logs_txt_path*/) { return -1; }
+int process_log_list(const std::string& /*logs_txt_path*/) {
+  return -1;
+}
