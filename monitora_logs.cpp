@@ -48,12 +48,11 @@ bool is_valid_message(const std::string& msg) {
 
 bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep1 = 0, sep2 = 0, sep3 = 0, sep4 = 0;
-  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year >>
-      entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
+  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year
+         >> entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
   if (iss->fail()) return false;
-  if (sep1 != kDateSep || sep2 != kDateSep || sep3 != kTimeSep ||
-      sep4 != kTimeSep)
-    return false;
+  if (sep1 != kDateSep || sep2 != kDateSep
+      || sep3 != kTimeSep || sep4 != kTimeSep) return false;
   if (!is_valid_date(entry->day, entry->month, entry->year)) return false;
   if (!is_valid_time(entry->hour, entry->minute, entry->second)) return false;
   return true;
@@ -99,7 +98,31 @@ std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a,
                                     const std::vector<LogEntry>& b) {
   if (a.empty()) return b;
   if (b.empty()) return a;
-  return std::vector<LogEntry>();
+
+  std::vector<LogEntry> result;
+  result.reserve(a.size() + b.size());
+
+  size_t i = 0, j = 0;
+  while (i < a.size() && j < b.size()) {
+    if (compare_log_entries(a[i], b[j]) <= 0) {
+      result.push_back(a[i]);
+      i++;
+    } else {
+      result.push_back(b[j]);
+      j++;
+    }
+  }
+
+  while (i < a.size()) {
+    result.push_back(a[i]);
+    i++;
+  }
+  while (j < b.size()) {
+    result.push_back(b[j]);
+    j++;
+  }
+
+  return result;
 }
 
 std::string make_total_filename(const std::string& source_path) {
@@ -110,4 +133,6 @@ std::string make_total_filename(const std::string& source_path) {
   return "total_" + source_path.substr(last_slash + 1);
 }
 
-int process_log_list(const std::string& /*logs_txt_path*/) { return -1; }
+int process_log_list(const std::string& /*logs_txt_path*/) {
+  return -1;
+}
