@@ -107,9 +107,21 @@ bool read_log_file(const std::string& path, std::vector<LogEntry>* entries) {
   return true;
 }
 
-bool write_log_file(const std::string& /*path*/,
-                    const std::vector<LogEntry>& /*entries*/) {
-  return false;
+bool write_log_file(const std::string& path,
+                    const std::vector<LogEntry>& entries) {
+  std::ofstream file(path);
+  if (!file.is_open()) {
+    return false;
+  }
+
+  for (const auto& entry : entries) {
+    if (!entry.valid) continue;
+    file << entry.day << kDateSep << entry.month << kDateSep << entry.year
+         << " " << entry.hour << kTimeSep << entry.minute << kTimeSep
+         << entry.second << " " << entry.message << "\n";
+  }
+
+  return true;
 }
 
 std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a,
