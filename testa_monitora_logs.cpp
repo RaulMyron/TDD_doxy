@@ -130,14 +130,10 @@ TEST_CASE("T8 RED: MergeEntries_UmaListaVaziaRetornaOutraOrdenada",
 }
 
 TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
-  std::vector<LogEntry> lista_a = {
-    {16, 1, 2026, 13, 27, 46, "Log A1", true},
-    {20, 1, 2026, 17, 45, 38, "Log A2", true}
-  };
-  std::vector<LogEntry> lista_b = {
-    {17, 1, 2026, 14, 17, 46, "Log B1", true},
-    {21, 1, 2026, 18, 55, 38, "Log B2", true}
-  };
+  std::vector<LogEntry> lista_a = {{16, 1, 2026, 13, 27, 46, "Log A1", true},
+                                   {20, 1, 2026, 17, 45, 38, "Log A2", true}};
+  std::vector<LogEntry> lista_b = {{17, 1, 2026, 14, 17, 46, "Log B1", true},
+                                   {21, 1, 2026, 18, 55, 38, "Log B2", true}};
 
   std::vector<LogEntry> resultado = merge_entries(lista_a, lista_b);
 
@@ -148,9 +144,9 @@ TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   REQUIRE(resultado[3].message == "Log B2");
 }
 
-TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste", "[read_log_file]") {
+TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
+          "[read_log_file]") {
   std::vector<LogEntry> entradas;
-  // Força inserção de lixo para garantir que a função vai limpar o vetor
   entradas.push_back({1, 1, 2026, 0, 0, 0, "Lixo", true});
 
   bool resultado = read_log_file("arquivo_inexistente_123456.txt", &entradas);
