@@ -101,6 +101,9 @@ LogEntry parse_log_line(const std::string& line) {
   if (!rest.empty() && rest[0] == ' ') {
     rest = rest.substr(1);
   }
+  if (rest.empty() || rest.size() > 100) {
+    return entry;
+  }
   entry.message = rest;
   entry.valid = true;
   return entry;
