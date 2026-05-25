@@ -54,3 +54,22 @@ TEST_CASE("ParseLogLine_RejeitaDataMalFormatada", "[parse][black-box]") {
     REQUIRE(parse_log_line("abc/1/2026 13:27:46 msg").valid == false);
   }
 }
+
+// ----------------------------------------------------------------------------
+// T3 - ParseLogLine: rejeita linhas com hora invalida.
+// Sub-tabela de decisao ParseLogLine, coluna R2.
+// ----------------------------------------------------------------------------
+TEST_CASE("ParseLogLine_RejeitaHoraMalFormatada", "[parse][black-box]") {
+  SECTION("hora 24") {
+    REQUIRE(parse_log_line("1/1/2026 24:00:00 msg").valid == false);
+  }
+  SECTION("hora negativa") {
+    REQUIRE(parse_log_line("1/1/2026 -1:00:00 msg").valid == false);
+  }
+  SECTION("minuto 60") {
+    REQUIRE(parse_log_line("1/1/2026 12:60:00 msg").valid == false);
+  }
+  SECTION("segundo 60") {
+    REQUIRE(parse_log_line("1/1/2026 12:00:60 msg").valid == false);
+  }
+}
