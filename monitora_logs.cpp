@@ -20,6 +20,15 @@ constexpr int kMaxDay = 31;
 constexpr int kMinMonth = 1;
 constexpr int kMaxMonth = 12;
 constexpr int kMinYear = 1;
+constexpr size_t kMinMsgLen = 1;
+constexpr size_t kMaxMsgLen = 100;
+
+/**
+ * @brief Verifica se a mensagem tem entre 1 e 100 caracteres (inclusive).
+ */
+bool is_valid_message(const std::string& msg) {
+  return msg.size() >= kMinMsgLen && msg.size() <= kMaxMsgLen;
+}
 
 /**
  * @brief Verifica se uma data (dia, mes, ano) esta dentro dos intervalos
@@ -101,9 +110,11 @@ LogEntry parse_log_line(const std::string& line) {
   if (!rest.empty() && rest[0] == ' ') {
     rest = rest.substr(1);
   }
-  if (rest.empty() || rest.size() > 100) {
+
+  if (!is_valid_message(rest)) {
     return entry;
   }
+
   entry.message = rest;
   entry.valid = true;
   return entry;
