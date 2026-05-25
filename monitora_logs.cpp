@@ -121,6 +121,7 @@ LogEntry parse_log_line(const std::string& line) {
 }
 
 int compare_log_entries(const LogEntry& a, const LogEntry& b) {
+  // Comparacao lexicografica por campo: ano > mes > dia > hora > min > seg.
   if (a.year != b.year) return a.year - b.year;
   if (a.month != b.month) return a.month - b.month;
   if (a.day != b.day) return a.day - b.day;
