@@ -9,16 +9,16 @@
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+
 #include "monitora_logs.hpp"
 
 // ----------------------------------------------------------------------------
 // T1 - ParseLogLine: aceita uma linha valida completa.
-// Tabela de decisao (caixa fechada): coluna R4 da sub-tabela ParseLogLine
-// (todas as condicoes verdadeiras -> retorna LogEntry valido).
+// Sub-tabela de decisao ParseLogLine, coluna R4
+// (data ok, hora ok, mensagem ok -> retorna LogEntry valido).
 // ----------------------------------------------------------------------------
 TEST_CASE("ParseLogLine_AceitaLinhaCompleta", "[parse][black-box]") {
   LogEntry e = parse_log_line("16/1/2026 13:27:46 Este e um exemplo de log");
-
   REQUIRE(e.valid == true);
   REQUIRE(e.day == 16);
   REQUIRE(e.month == 1);
@@ -27,4 +27,30 @@ TEST_CASE("ParseLogLine_AceitaLinhaCompleta", "[parse][black-box]") {
   REQUIRE(e.minute == 27);
   REQUIRE(e.second == 46);
   REQUIRE(e.message == "Este e um exemplo de log");
+}
+
+// ----------------------------------------------------------------------------
+// T2 - ParseLogLine: rejeita linhas com data invalida.
+// Sub-tabela de decisao ParseLogLine, coluna R1
+// (data invalida -> retorna LogEntry invalido).
+// ----------------------------------------------------------------------------
+TEST_CASE("ParseLogLine_RejeitaDataMalFormatada", "[parse][black-box]") {
+  SECTION("dia zero") {
+    REQUIRE(parse_log_line("0/1/2026 13:27:46 msg").valid == false);
+  }
+  SECTION("dia maior que 31") {
+    REQUIRE(parse_log_line("32/1/2026 13:27:46 msg").valid == false);
+  }
+  SECTION("mes zero") {
+    REQUIRE(parse_log_line("1/0/2026 13:27:46 msg").valid == false);
+  }
+  SECTION("mes maior que 12") {
+    REQUIRE(parse_log_line("1/13/2026 13:27:46 msg").valid == false);
+  }
+  SECTION("ano zero") {
+    REQUIRE(parse_log_line("1/1/0 13:27:46 msg").valid == false);
+  }
+  SECTION("data nao numerica") {
+    REQUIRE(parse_log_line("abc/1/2026 13:27:46 msg").valid == false);
+  }
 }
