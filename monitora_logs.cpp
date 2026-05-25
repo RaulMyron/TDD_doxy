@@ -50,11 +50,12 @@ bool is_valid_message(const std::string& msg) {
 
 bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep1 = 0, sep2 = 0, sep3 = 0, sep4 = 0;
-  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year
-         >> entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
+  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year >>
+      entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
   if (iss->fail()) return false;
-  if (sep1 != kDateSep || sep2 != kDateSep
-      || sep3 != kTimeSep || sep4 != kTimeSep) return false;
+  if (sep1 != kDateSep || sep2 != kDateSep || sep3 != kTimeSep ||
+      sep4 != kTimeSep)
+    return false;
   if (!is_valid_date(entry->day, entry->month, entry->year)) return false;
   if (!is_valid_time(entry->hour, entry->minute, entry->second)) return false;
   return true;
@@ -94,8 +95,7 @@ int compare_log_entries(const LogEntry& a, const LogEntry& b) {
 /**
  * @brief Le um arquivo de log e extrai suas linhas validas.
  */
-bool read_log_file(const std::string& path,
-                   std::vector<LogEntry>* entries) {
+bool read_log_file(const std::string& path, std::vector<LogEntry>* entries) {
   if (entries != nullptr) {
     entries->clear();
   }
@@ -129,8 +129,8 @@ bool write_log_file(const std::string& path,
 
   for (const auto& entry : entries) {
     if (!entry.valid) continue;
-    file << entry.day << kDateSep << entry.month << kDateSep << entry.year 
-         << " " << entry.hour << kTimeSep << entry.minute << kTimeSep 
+    file << entry.day << kDateSep << entry.month << kDateSep << entry.year
+         << " " << entry.hour << kTimeSep << entry.minute << kTimeSep
          << entry.second << " " << entry.message << "\n";
   }
 
@@ -203,7 +203,7 @@ int process_log_list(const std::string& logs_txt_path) {
 
     std::string total_filename = make_total_filename(log_file_path);
     std::vector<LogEntry> current_total_entries;
-    
+
     std::ifstream check_file(total_filename);
     bool total_existed = check_file.is_open();
     check_file.close();
@@ -217,12 +217,13 @@ int process_log_list(const std::string& logs_txt_path) {
       continue;
     }
 
-    std::sort(new_entries.begin(), new_entries.end(), 
+    std::sort(new_entries.begin(), new_entries.end(),
               [](const LogEntry& x, const LogEntry& y) {
                 return compare_log_entries(x, y) < 0;
               });
 
-    std::vector<LogEntry> merged = merge_entries(current_total_entries, new_entries);
+    std::vector<LogEntry> merged =
+        merge_entries(current_total_entries, new_entries);
     write_log_file(total_filename, merged);
 
     processed_count++;

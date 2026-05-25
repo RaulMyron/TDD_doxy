@@ -8,6 +8,7 @@
 #define CATCH_CONFIG_MAIN
 #include <cstdio>
 #include <fstream>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -372,8 +373,6 @@ TEST_CASE("T20: ProcessLogList_DescartaLinhasInvalidasEProcessaValidas",
   std::remove("lista_linhas_mistas.txt");
   std::remove("total_log_linhas_mistas.txt");
 }
-
-#include <regex>
 
 TEST_CASE("T21: Regex_MensagemTamanho1A100", "[caixa_aberta]") {
   // Regex mapeando o formato: data hora mensagem(1 ate 100 chars)

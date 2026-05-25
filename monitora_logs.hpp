@@ -46,7 +46,7 @@ int compare_log_entries(const LogEntry& a, const LogEntry& b);
  * @brief Le um arquivo de log e extrai suas linhas validas.
  * @param path Caminho para o arquivo a ser lido no disco.
  * @param entries Ponteiro para o vetor onde os logs serao armazenados.
- * @return true se o arquivo foi aberto e lido com sucesso, false caso contrario.
+ * @return true se o arquivo foi aberto e lido com sucesso.
  */
 bool read_log_file(const std::string& path, std::vector<LogEntry>* entries);
 
@@ -56,7 +56,8 @@ bool read_log_file(const std::string& path, std::vector<LogEntry>* entries);
  * @param entries Vetor contendo os registros de log a serem escritos.
  * @return true se a escrita for bem sucedida, false se falhar ao abrir.
  */
-bool write_log_file(const std::string& path, const std::vector<LogEntry>& entries);
+bool write_log_file(const std::string& path,
+                    const std::vector<LogEntry>& entries);
 
 /**
  * @brief Realiza o merge de duas listas de log mantendo a ordem cronologica.
@@ -64,7 +65,8 @@ bool write_log_file(const std::string& path, const std::vector<LogEntry>& entrie
  * @param b Segunda lista de logs.
  * @return Um novo vetor contendo a mescla ordenada de a e b.
  */
-std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a, const std::vector<LogEntry>& b);
+std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a,
+                                    const std::vector<LogEntry>& b);
 
 /**
  * @brief Cria o nome do arquivo total adicionando o prefixo "total_".
@@ -74,9 +76,9 @@ std::vector<LogEntry> merge_entries(const std::vector<LogEntry>& a, const std::v
 std::string make_total_filename(const std::string& source_path);
 
 /**
- * @brief Processa uma lista de arquivos de log descrita em um arquivo texto.
+ * @brief Processa uma lista de arquivos de log.
  * @param logs_txt_path Caminho para o arquivo de configuracao principal.
- * @return Numero de arquivos processados com sucesso, ou -1 em caso de falha de abertura.
+ * @return Numero de arquivos processados, ou -1 em caso de falha.
  */
 int process_log_list(const std::string& logs_txt_path);
 
