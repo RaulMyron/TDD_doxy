@@ -1,0 +1,28 @@
+cat > .gitignore << 'EOF'
+# Binarios
+testa_monitora_logs
+testa_monitora_logs_cov
+*.o
+*.obj
+*.exe
+
+# Cobertura
+*.gcno
+*.gcda
+*.gcov
+
+# Doxygen
+doc/
+html/
+latex/
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Arquivos de teste temporarios
+test_tmp/
+*.tmp
+EOF
