@@ -50,17 +50,30 @@ bool read_date_and_time(std::istringstream* iss, LogEntry* entry) {
   char sep3 = 0;
   char sep4 = 0;
 
-  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year
-         >> entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
+  (*iss) >> entry->day >> sep1 >> entry->month >> sep2 >> entry->year >>
+      entry->hour >> sep3 >> entry->minute >> sep4 >> entry->second;
 
   if (iss->fail()) {
     return false;
   }
-  if (sep1 != kDateSep || sep2 != kDateSep
-      || sep3 != kTimeSep || sep4 != kTimeSep) {
+  if (sep1 != kDateSep || sep2 != kDateSep || sep3 != kTimeSep ||
+      sep4 != kTimeSep) {
     return false;
   }
-  return is_valid_date(entry->day, entry->month, entry->year);
+  if (!is_valid_date(entry->day, entry->month, entry->year)) {
+    return false;
+  }
+  // Validacao de intervalos de hora.
+  if (entry->hour < 0 || entry->hour > 23) {
+    return false;
+  }
+  if (entry->minute < 0 || entry->minute > 59) {
+    return false;
+  }
+  if (entry->second < 0 || entry->second > 59) {
+    return false;
+  }
+  return true;
 }
 
 }  // namespace
@@ -110,6 +123,4 @@ std::string make_total_filename(const std::string& /*source_path*/) {
   return std::string();
 }
 
-int process_log_list(const std::string& /*logs_txt_path*/) {
-  return -1;
-}
+int process_log_list(const std::string& /*logs_txt_path*/) { return -1; }
