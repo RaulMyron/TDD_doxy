@@ -141,7 +141,7 @@ TEST_CASE("T9 RED: MergeEntries_DuasListasMesclaEOrdena", "[merge_entries]") {
   REQUIRE(resultado[0].message == "Log A1");
   REQUIRE(resultado[1].message == "Log B1");
   REQUIRE(resultado[2].message == "Log A2");
-  REQUIRE(resultado[3].message == "Log B2");
+  REQUIRE(resultado[3].message == "Log B2");  // vai commit
 }
 
 TEST_CASE("T10 RED: ReadLogFile_RetornaFalseSeArquivoNaoExiste",
@@ -177,9 +177,8 @@ TEST_CASE("T11 RED: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
 TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
           "[write_log_file]") {
   std::vector<LogEntry> entradas = {
-    {16, 1, 2026, 13, 27, 46, "Texto do log A", true},
-    {17, 1, 2026, 14, 17, 46, "Texto do log B", true}
-  };
+      {16, 1, 2026, 13, 27, 46, "Texto do log A", true},
+      {17, 1, 2026, 14, 17, 46, "Texto do log B", true}};
 
   bool resultado = write_log_file("teste_escrita.txt", entradas);
   REQUIRE(resultado == true);
