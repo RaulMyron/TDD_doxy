@@ -97,3 +97,16 @@ TEST_CASE("ParseLogLine_RejeitaMensagemVaziaOuLonga", "[parse][black-box]") {
     REQUIRE(parse_log_line("1/1/2026 12:00:00 a").valid == true);
   }
 }
+
+// ----------------------------------------------------------------------------
+// T5 - compare_log_entries: ordena cronologicamente.
+// ----------------------------------------------------------------------------
+TEST_CASE("CompareLogEntries_OrdenaCronologicamente", "[compare][black-box]") {
+  LogEntry a = parse_log_line("16/1/2026 13:27:46 msg a");
+  LogEntry b = parse_log_line("20/1/2026 17:45:38 msg b");
+  LogEntry c = parse_log_line("16/1/2026 13:27:46 msg c");
+
+  REQUIRE(compare_log_entries(a, b) < 0);
+  REQUIRE(compare_log_entries(b, a) > 0);
+  REQUIRE(compare_log_entries(a, c) == 0);
+}
