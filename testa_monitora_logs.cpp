@@ -173,3 +173,26 @@ TEST_CASE("T11 RED: ReadLogFile_LeArquivoComLinhasValidas", "[read_log_file]") {
   // Remove o arquivo temporario
   std::remove("teste_linhas_validas.txt");
 }
+
+TEST_CASE("T12 RED: WriteLogFile_EscreveEntradasNoFormatoCorreto",
+          "[write_log_file]") {
+  std::vector<LogEntry> entradas = {
+    {16, 1, 2026, 13, 27, 46, "Texto do log A", true},
+    {17, 1, 2026, 14, 17, 46, "Texto do log B", true}
+  };
+
+  bool resultado = write_log_file("teste_escrita.txt", entradas);
+  REQUIRE(resultado == true);
+
+  // Valida abrindo o arquivo para ler o conteudo textual gravado
+  std::ifstream leitor("teste_escrita.txt");
+  std::string linha1, linha2;
+  std::getline(leitor, linha1);
+  std::getline(leitor, linha2);
+  leitor.close();
+
+  REQUIRE(linha1 == "16/1/2026 13:27:46 Texto do log A");
+  REQUIRE(linha2 == "17/1/2026 14:17:46 Texto do log B");
+
+  std::remove("teste_escrita.txt");
+}
