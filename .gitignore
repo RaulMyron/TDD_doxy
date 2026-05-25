@@ -26,3 +26,15 @@ latex/
 test_tmp/
 *.tmp
 EOF
+# Arquivos temporários de teste
+teste_*.txt
+lista_*.txt
+log_existente*.txt
+total_log_existente*.txt
+
+# Executáveis e relatórios do compilador
+testa_monitora_logs
+*.o
+*.gcov
+*.gcda
+*.gcno
